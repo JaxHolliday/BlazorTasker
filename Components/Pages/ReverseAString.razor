@@ -4,6 +4,66 @@
 
 <h3>Reverse A String</h3>
 
-@code {
+@* V stack is for elements to stack vertically
+        * gap-3 is for spacing between elements
+        * col-8 is for 8 columns wide on small devices
+        * col-md-6 is for 6 columns wide on medium devices
+        * form-control is for styling the input text box
+        * text-end is for right aligning the button
+        * btn-primary is for styling the button
+        * @onclick is for calling the method when the button is clicked
+        * @bind-Value is for two-way data binding with the input text box*@
 
+<div class="vstack gap-3 col-8 col-md-6">
+    <InputText class="form-control" placeholder="Enter a string to reverse" @bind-Value="message" />
+    <div class="text-end">
+        <button class="btn btn-primary" @onclick="ReverseMe">Reverse Me</button>
+    </div>
+    <hr />
+@*     <Message DisplayMessage="@displayMessage" Title="Results" CssClass="alert-danger"/>
+ *@
+    @if (reversedMessage != "")
+    {
+        @if (IsPalindrome)
+        {
+            <Message DisplayMessage="@displayMessage" Title="The message IS a palindrome" CssClass="alert-success" />
+        }
+        else
+        {
+            <Message DisplayMessage="@displayMessage" Title="The message IS NOT a palindrome" CssClass="alert-danger" />
+        }
+    }
+</div>
+
+@code {
+    private string message = "Reverse Me";
+    private string reversedMessage = "";
+    private string displayMessage = "";
+    private bool IsPalindrome = false;
+
+    private void ReverseMe()
+    {
+        // Reset reversedMessage
+        reversedMessage = "";
+
+
+        // Reverse the input message
+        for (int i = message.Length - 1; i >= 0; i--)
+        {
+            reversedMessage += message[i];
+        }
+
+        // Check if the reversed message is the same as the original
+        if (message == reversedMessage)
+        {
+            IsPalindrome = true;
+        }
+        else
+        {
+            IsPalindrome = false;
+        }
+
+        // Display the result
+        displayMessage = $"The reverse of {message} is {reversedMessage}";
+    }
 }
