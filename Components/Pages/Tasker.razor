@@ -6,7 +6,7 @@
             <img src="/img/mw1920_image.png" width="300" />
         </div>
         <div>
-            <EditForm Model="ti">
+            <EditForm Model="ti" OnValidSubmit="addTask">
                 <DataAnnotationsValidator />
                 <div class="d-flex flex-row gap-2">
                     <InputText class="form-control" placeholder="Enter a task" @bind-Value="ti.Name" />
@@ -18,9 +18,29 @@
             </EditForm>
         </div>
         <hr />
+        <div class="vstack">
+            @foreach (var lineitem in taskerItems)
+            {
+                <TaskerLine Item="lineitem" />
+
+@*                 <div class="task-item d-flex justify-content-between align-items-center">
+                    <span>@item.Name</span>
+                    <button class="btn btn-danger" @onclick="@(() => taskerItems.Remove(item))">Remove</button>
+                </div>
+ *@            }
+        </div>
     </div>
 </div>
 
 @code {
     private TaskerItem ti = new();
+    private List<TaskerItem> taskerItems = new();
+
+
+    private void addTask()
+    {
+        ti.Id = Guid.NewGuid();
+        taskerItems.Add(ti);
+        ti = new TaskerItem();
+    }
 }

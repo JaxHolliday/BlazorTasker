@@ -1,0 +1,15 @@
+﻿<h3>TaskerLine</h3>
+
+<div class="d-flex flex-row">
+    <div><InputCheckbox @bind-Value="Item.IsComplete"></InputCheckbox></div>
+    <div class="px-2 flex-grow-1">@Item.Name</div>
+    <div><i class="bi bi-trash-fill text-danger"></i></div>
+</div>
+
+@code {
+    /// <summary>
+    /// Tasker Item we want to display
+    /// </summary>
+    [Parameter, EditorRequired]
+    public TaskerItem? Item { get; set; }
+}
