@@ -1,5 +1,7 @@
 ﻿@page "/tasker"
 
+@inject IJSRuntime JS;
+
 <div class="d-flex align-items-center justify-content-center">
     <div class="task p-5">
         <div class="p-2 text-center mb-3">
@@ -19,15 +21,10 @@
         </div>
         <hr />
         <div class="vstack">
-            @foreach (var lineitem in taskerItems)
+            @foreach (var lineItem in taskerItems)
             {
-                <TaskerLine Item="lineitem" />
-
-@*                 <div class="task-item d-flex justify-content-between align-items-center">
-                    <span>@item.Name</span>
-                    <button class="btn btn-danger" @onclick="@(() => taskerItems.Remove(item))">Remove</button>
-                </div>
- *@            }
+                <TaskerLine Item="lineItem" OnDeleteCallBack="@deleteTask" />
+            }
         </div>
     </div>
 </div>
@@ -36,11 +33,16 @@
     private TaskerItem ti = new();
     private List<TaskerItem> taskerItems = new();
 
-
-    private void addTask()
+    private async void addTask()
     {
-        ti.Id = Guid.NewGuid();
-        taskerItems.Add(ti);
-        ti = new TaskerItem();
+        ti.Id = Guid.NewGuid();  // Assign a unique ID to the task.
+        taskerItems.Add(ti);     // Add the task to the list.
+        ti = new();              // Reset ti for a new input.
     }
+
+    private async void deleteTask(TaskerItem item)
+    {
+        taskerItems.Remove(item);  // Remove the task from the list.
+    }
+
 }
