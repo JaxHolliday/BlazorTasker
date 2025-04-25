@@ -16,7 +16,7 @@
             <EditForm Model="ti" OnValidSubmit="addTask">
                 <DataAnnotationsValidator />
                 <div class="d-flex flex-row gap-2">
-                    <InputText class="form-control" placeholder="Enter a task" @bind-Value="ti.Name" />
+                    <InputText @ref=textBoxTask class="form-control" placeholder="Enter a task" @bind-Value="ti.Name" />
                     <button type="submit" class="btn btn-primary">Add</button>
                 </div>
                 <div>
@@ -28,7 +28,7 @@
         <div class="vstack">
             @foreach (var lineItem in taskerItems)
             {
-                <TaskerLine Item="lineItem" OnDeleteCallBack="@deleteTask" />
+                <TaskerLine Item="lineItem" OnDeleteCallBack="@deleteTask" OnCompleteCallBack="@updateTask"/>
             }
         </div>
     </div>
@@ -37,11 +37,21 @@
 @code {
     private TaskerItem ti = new();
     private List<TaskerItem> taskerItems = new();
+    private InputText? textBoxTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         ///load in the items from local storage
+        await LoadListAsync();
+    }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Focus the input box after the first render.
+            await textBoxTask!.Element!.Value.FocusAsync();
+        }
     }
 
     private async void addTask()
@@ -55,6 +65,7 @@
     private async void deleteTask(TaskerItem item)
     {
         taskerItems.Remove(item);  // Remove the task from the list.
+        await SaveListAsync();
     }
 
     private async Task SaveListAsync()
@@ -74,16 +85,17 @@
             // Deserialize the JSON string back into a list of TaskerItem objects.
             taskerItems = JsonSerializer.Deserialize<List<TaskerItem>>(taskerItemsJson) ?? new List<TaskerItem>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Handle exceptions, such as JSON deserialization errors.
-            Console.WriteLine($"Error loading tasker items: {ex.Message}");
+            taskerItems = new();
+            await SaveListAsync();  // Save an empty list to local storage in case of error.
         }
     }
 
-    private void updateTask(TaskerItem item)
+    private async Task updateTask(TaskerItem item)
     {
         // save item to local storage.
+        await SaveListAsync();
     }
 
 }

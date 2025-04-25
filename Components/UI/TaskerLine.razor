@@ -13,14 +13,19 @@
     [Parameter, EditorRequired]
     public TaskerItem? Item { get; set; }
 
-    /// <summary>
-    /// Delete item callback
-    /// </summary>
     [Parameter]
     public EventCallback<TaskerItem> OnDeleteCallBack { get; set; }
+
+    [Parameter]
+    public EventCallback<TaskerItem> OnCompleteCallBack { get; set; }
 
     private async Task deleteItem()
     {
         await OnDeleteCallBack.InvokeAsync(Item);
+    }
+
+    private async Task updateItem()
+    {
+        await OnCompleteCallBack.InvokeAsync(Item);
     }
 }
